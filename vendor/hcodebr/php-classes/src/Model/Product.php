@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace Hcode\Model;
 
@@ -8,20 +8,20 @@ use \Hcode\Mailer;
 
 class Product extends Model {
 
-    public static function listAll()
-    {
-        
-        $sql = new Sql();
+  public static function listAll()
+  {
 
-        return $sql->select("SELECT * FROM tb_products ORDER BY desproduct");
-    
-   }
+    $sql = new Sql();
 
-   public static function checkList($list)
-   {
+    return $sql->select("SELECT * FROM tb_products ORDER BY desproduct");
+
+  }
+
+  public static function checkList($list)
+  {
 
     foreach ($list as &$row) {
-
+      
       $p = new Product();
       $p->setData($row);
       $row = $p->getValues();
@@ -30,29 +30,30 @@ class Product extends Model {
 
     return $list;
 
-   }
+  }
 
-   public function save()
-   {
+  public function save()
+  {
 
     $sql = new Sql();
-        $results = $sql->select("CALL sp_products_save(:idproduct, :desproduct, :vlprice, :vlwidth, :vlheight, :vllength, :vlweight, :desurl)", array(
-          ":idproduct"=>$this->getidproduct(),
-          ":desproduct"=>$this->getdesproduct(),
-          ":vlprice"=>$this->getvlprice(),
-          ":vlwidth"=>$this->getvlwidth(),
-          ":vlheight"=>$this->getvlheight(),
-          ":vllength"=>$this->getvllength(),
-          ":vlweight"=>$this->getvlweight(),
-          ":desurl"=>$this->getdesurl()
-        ));
 
-        $this->setData($results[0]);
+    $results = $sql->select("CALL sp_products_save(:idproduct, :desproduct, :vlprice, :vlwidth, :vlheight, :vllength, :vlweight, :desurl)", array(
+      ":idproduct"=>$this->getidproduct(),
+      ":desproduct"=>$this->getdesproduct(),
+      ":vlprice"=>$this->getvlprice(),
+      ":vlwidth"=>$this->getvlwidth(),
+      ":vlheight"=>$this->getvlheight(),
+      ":vllength"=>$this->getvllength(),
+      ":vlweight"=>$this->getvlweight(),
+      ":desurl"=>$this->getdesurl()
+    ));
 
-   }
+    $this->setData($results[0]);
 
-   public function get($idproduct)
-   {
+  }
+
+  public function get($idproduct)
+  {
 
     $sql = new Sql();
 
@@ -62,45 +63,45 @@ class Product extends Model {
 
     $this->setData($results[0]);
 
-   }
+  }
 
-   public function delete()
-   {
+  public function delete()
+  {
 
-        $sql = new Sql();
-        $sql->query("DELETE FROM tb_products WHERE idproduct = :idproduct", [
-        ':idproduct'=>$this->getidproduct()
-        ]);
+    $sql = new Sql();
 
-   }
+    $sql->query("DELETE FROM tb_products WHERE idproduct = :idproduct", [
+      ':idproduct'=>$this->getidproduct()
+    ]);
 
-   public function checkPhoto()
-   {
+  }
+
+  public function checkPhoto()
+  {
 
     if (file_exists(
       $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 
       "res" . DIRECTORY_SEPARATOR . 
-      "site" . DIRECTORY_SEPARATOR .
-      "img" . DIRECTORY_SEPARATOR .
-      "products" . DIRECTORY_SEPARATOR .
+      "site" . DIRECTORY_SEPARATOR . 
+      "img" . DIRECTORY_SEPARATOR . 
+      "products" . DIRECTORY_SEPARATOR . 
       $this->getidproduct() . ".jpg"
-    )) {
+      )) {
 
       $url = "/res/site/img/products/" . $this->getidproduct() . ".jpg";
 
     } else {
 
-      $url = "/res/site/img/products/product.jpg";
-    
+      $url = "/res/site/img/product.jpg";
+
     }
 
     return $this->setdesphoto($url);
 
+  }
 
-   }
-
-   public function getValues()
-   {
+  public function getValues()
+  {
 
     $this->checkPhoto();
 
@@ -108,11 +109,11 @@ class Product extends Model {
 
     return $values;
 
-   }
+  }
 
-   public function setPhoto($file)
-   {
-    
+  public function setPhoto($file)
+  {
+
     $extension = explode('.', $file['name']);
     $extension = end($extension);
 
@@ -135,46 +136,46 @@ class Product extends Model {
 
     $dist = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 
       "res" . DIRECTORY_SEPARATOR . 
-      "site" . DIRECTORY_SEPARATOR .
-      "img" . DIRECTORY_SEPARATOR .
-      "products" . DIRECTORY_SEPARATOR .
+      "site" . DIRECTORY_SEPARATOR . 
+      "img" . DIRECTORY_SEPARATOR . 
+      "products" . DIRECTORY_SEPARATOR . 
       $this->getidproduct() . ".jpg";
 
-      imagejpeg($image, $dist);
+    imagejpeg($image, $dist);
 
-      imagedestroy($image);
+    imagedestroy($image);
 
-      $this->checkPhoto();
+    $this->checkPhoto();
 
-   }
+  }
 
-   public function getFromURL($desurl)
-   {
+  public function getFromURL($desurl)
+  {
 
     $sql = new Sql();
 
-    $rows = $sql->select("SELECT * FROM `tb_products` WHERE desurl = :desurl LIMIT 1", [
+    $rows = $sql->select("SELECT * FROM tb_products WHERE desurl = :desurl LIMIT 1", [
       ':desurl'=>$desurl
-
     ]);
 
     $this->setData($rows[0]);
 
-   }
+  }
 
-   public function getCategories()
-   {
+  public function getCategories()
+  {
 
     $sql = new Sql();
 
     return $sql->select("
       SELECT * FROM tb_categories a INNER JOIN tb_productscategories b ON a.idcategory = b.idcategory WHERE b.idproduct = :idproduct
-      ", [
-        ':idproduct'=>$this->getidproduct()
-      ]);
+    ", [
 
-   }
+      ':idproduct'=>$this->getidproduct()
+    ]);
+
+  }
 
 }
 
-?>
+ ?>

@@ -11,6 +11,7 @@ class Cart extends Model {
 
 	const SESSION = "Cart";
 	const ERROR = "CartError";
+	const SESSION_ERROR = "CartError";
 
 	public static function getFromSession()
 	{
@@ -287,6 +288,29 @@ class Cart extends Model {
 		return str_replace(',', '.', $value);
 	
 	}
+
+	public static function setMsgError($msg)
+	{
+
+		$_SESSION[Cart::SESSION_ERROR] = $msg;
+	}
+
+	public static function getMsgError()
+	{
+
+		$msg = (isset($_SESSION[Cart::SESSION_ERROR])) ? $_SESSION[Cart::SESSION_ERROR] : "";
+		
+		Cart::clearMsgError();
+		
+		return $msg;
+	}
+
+	public static function clearMsgError()
+	{
+
+		$_SESSION[Cart::SESSION_ERROR] = NULL;
+	}
+
 
 	public function setCartError($msg)
 	{
